@@ -98,7 +98,7 @@ jobs:
           "format": "MULTI_TASK",
           "tasks": [
             {
-              "task_key": "tarea1_nclase_cicd",
+              "task_key": "tarea1_clase_cicd",
               "description": "Ejecuta notebook clase_cicd",
               "notebook_task": {
                 "notebook_path": "/py/scripts/main/clase_cicd",
