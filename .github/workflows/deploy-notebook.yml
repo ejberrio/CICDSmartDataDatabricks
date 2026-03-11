@@ -18,7 +18,7 @@ jobs:
         ORIGIN_HOST=${{ secrets.DATABRICKS_ORIGIN_HOST }}
         ORIGIN_TOKEN=${{ secrets.DATABRICKS_ORIGIN_TOKEN }}
         NOTEBOOK_BASE="/Workspace/Users/everberriocastro@outlook.com/CICDSmartDataDatabricks"
-        NOTEBOOKS=("clase_cicd", "resultado")  # Agrega más según necesitesas
+        NOTEBOOKS=("clase_cicd" "resultado")  # Agrega más según necesitesas
         mkdir -p notebooks_to_deploy
         for nb in "${NOTEBOOKS[@]}"; do
           echo "Exportando $nb en modo raw..."
