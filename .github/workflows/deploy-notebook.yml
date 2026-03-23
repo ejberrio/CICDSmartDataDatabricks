@@ -142,7 +142,7 @@ jobs:
                 "notebook_path": "$DEST_BASE/Preparacion_Ambiente",
                 "source": "WORKSPACE",
                 "base_parameters": {
-                  "storageName": "adlssmartdata2023",
+                  "storageName": "adlssmartdada2",
                   "catalogo": "catalog_smartdata_final"
                 }
               },
@@ -161,7 +161,7 @@ jobs:
                   "container": "raw",
                   "catalogo": "catalog_smartdata_final",
                   "esquema": "bronze",
-                  "storageName": "adlssmartdata2023",
+                  "storageName": "adlssmartdada2",
                   "fileName": "Electric_Vehicle_Population_Data.csv",
                   "targetTable": "ev_population_bronze",
                   "writeMode": "overwrite"
@@ -182,7 +182,7 @@ jobs:
                   "container": "raw",
                   "catalogo": "catalog_smartdata_final",
                   "esquema": "bronze",
-                  "storageName": "adlssmartdata2023",
+                  "storageName": "adlssmartdada2",
                   "fileName": "electric_vehicles_spec_2025.csv.csv",
                   "targetTable": "ev_specs_2025_bronze",
                   "writeMode": "overwrite"
@@ -206,7 +206,7 @@ jobs:
                   "catalogo": "catalog_smartdata_final",
                   "esquema_bronze": "bronze",
                   "esquema_silver": "silver",
-                  "storageName": "adlssmartdata2023",
+                  "storageName": "adlssmartdada2",
                   "writeMode": "overwrite"
                 }
               },
@@ -225,7 +225,7 @@ jobs:
                   "catalogo": "catalog_smartdata_final",
                   "esquema_source": "silver",
                   "esquema_sink": "golden",
-                  "storageName": "adlssmartdata2023",
+                  "storageName": "adlssmartdada2",
                   "writeMode": "overwrite"
                 }
               },
