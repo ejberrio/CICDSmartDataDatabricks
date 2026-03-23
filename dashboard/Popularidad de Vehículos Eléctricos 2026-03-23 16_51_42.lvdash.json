@@ -1,0 +1,243 @@
+{
+  "datasets": [
+    {
+      "name": "66cec181",
+      "displayName": "vehiculos_electricos_registrados",
+      "queryLines": [
+        "select * from catalog_smartdata_final.golden.golden_ev_model_popularity order by vehicles_registered desc limit 30"
+      ],
+      "columns": [
+        {
+          "displayName": "Marca - Modelo",
+          "description": "Etiqueta combinada de marca y modelo del vehículo",
+          "expression": "CONCAT(make, ' - ', model)"
+        }
+      ]
+    },
+    {
+      "name": "dc0964b1",
+      "displayName": "ratio_rango_km_precio_usd",
+      "queryLines": [
+        "SELECT\n",
+        "  make,\n",
+        "  round(avg_specs_range_km, 0) as avg_specs_range_km,\n",
+        "  round(avg_price, 0) as avg_price,\n",
+        "  round(range_per_price_ratio, 4) as range_per_price_ratio,\n",
+        "  updated_ts,\n",
+        "  ROW_NUMBER() OVER (ORDER BY range_per_price_ratio DESC) as rank_order\n",
+        "FROM\n",
+        "  catalog_smartdata_final.golden.golden_make_range_price_ratio\n",
+        "WHERE\n",
+        "  range_per_price_ratio IS NOT NULL\n",
+        "ORDER BY\n",
+        "  range_per_price_ratio DESC\n",
+        "LIMIT 10"
+      ],
+      "columns": [
+        {
+          "displayName": "Km por $1,000 USD",
+          "description": "Índice de autonomía por cada $1,000 USD invertidos",
+          "expression": "range_per_price_ratio * 1000"
+        },
+        {
+          "displayName": "Marca (Ranking)",
+          "description": "Marca con ranking por índice rango/precio",
+          "expression": "CONCAT(CAST(rank_order AS STRING), '. ', make)"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "70de5f91",
+      "displayName": "Vehículos eléctricos",
+      "layout": [
+        {
+          "widget": {
+            "name": "vehiculos-electricos-registrados-por-modelo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "66cec181",
+                  "fields": [
+                    {
+                      "name": "make",
+                      "expression": "`make`"
+                    },
+                    {
+                      "name": "Marca - Modelo",
+                      "expression": "`Marca - Modelo`"
+                    },
+                    {
+                      "name": "sum(vehicles_registered)",
+                      "expression": "SUM(`vehicles_registered`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "VEHÍCULOS ELÉCTRICOS REGISTRADOS POR MARCA-MODELO",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Cantidad de vehículos registrados por marca y modelo en EEUU desde 2010 hasta 2022"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Marca - Modelo",
+                  "displayName": "Marca - Modelo",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(vehicles_registered)",
+                  "displayName": "Vehículos Registrados",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "make",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "make",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 8,
+            "height": 9
+          }
+        },
+        {
+          "widget": {
+            "name": "autonomia-km-por-precio",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "dc0964b1",
+                  "fields": [
+                    {
+                      "name": "max(avg_price)",
+                      "expression": "MAX(`avg_price`)"
+                    },
+                    {
+                      "name": "Marca (Ranking)",
+                      "expression": "`Marca (Ranking)`"
+                    },
+                    {
+                      "name": "max(Km por $1,000 USD)",
+                      "expression": "MAX(`Km por $1,000 USD`)"
+                    },
+                    {
+                      "name": "max(avg_specs_range_km)",
+                      "expression": "MAX(`avg_specs_range_km`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "frame": {
+                "title": "AUTONOMÍA VS PRECIO (Km por $1,000 USD)",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Índice de autonomía por precio promedio por marca de vehículos eléctricos en EEUU (2010 a 2022)"
+              },
+              "widgetType": "combo",
+              "encodings": {
+                "x": {
+                  "fieldName": "Marca (Ranking)",
+                  "displayName": "Marca (Ranking)",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "max(Km por $1,000 USD)",
+                        "displayName": "Km por $1,000 USD"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    }
+                  },
+                  "secondary": {
+                    "fields": [
+                      {
+                        "fieldName": "max(avg_specs_range_km)",
+                        "displayName": "Autonomía Promedio (km)"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    }
+                  }
+                },
+                "color": {
+                  "legend": {
+                    "position": "top"
+                  }
+                },
+                "extra": [
+                  {
+                    "fieldName": "max(avg_price)",
+                    "displayName": "Precio Promedio (USD)"
+                  }
+                ],
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 9,
+            "width": 8,
+            "height": 13
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "5de48aef",
+      "displayName": "Global Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
